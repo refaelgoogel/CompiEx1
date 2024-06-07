@@ -18,6 +18,7 @@
     BREAK = 15,
     CONTINUE = 16, 
     SC = 17,
+
     LPAREN = 18,
     RPAREN = 19,
     LBRACE = 20,
@@ -28,8 +29,13 @@
     COMMENT = 25,
     ID = 26,
     NUM = 27,
-    STRING = 28
+    STRING = 28,
+    UNCLOSED_STRING = 29,
+    UNDEFINED_ESCAPE_SEQUENCE = 30,
+    UNDEFINED_ESCAPE_SEQUENCE_HEX = 31,
+    ERROR = 32
   };
+
   extern int yylineno;
   extern char* yytext;
   extern int yyleng;

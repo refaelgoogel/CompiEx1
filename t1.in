@@ -1,15 +1,2 @@
-int main() {
-	int x = 5;
-	int powerOfx = x * x;
-	print(x);
-	return 0;
-	
-	
-	int a = 0000;
-	int a = 0;
-	int a = 012000;
-	int a = 001;
-	int a = 1000;
-	int a = 01;
-	int a = 10;
-}
+byte x = 15b;
+print("Hello\nyou!");
