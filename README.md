@@ -1,3 +1,7 @@
+![image](https://github.com/refaelgoogel/CompiEx1/assets/30772976/8d8e8b29-a172-4d44-bb9f-4b2ce83df4a7)
+
+
+
 Steps to Push Changes to GitHub
 
 1. Check the Status of Your Repository: Open your terminal (or Git Bash on Windows) and navigate to your project directory. Check the status to see which files have changed with :git status
