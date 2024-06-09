@@ -14,9 +14,9 @@ DigitsNoZero        ([1-9])
 Alphabet           ([a-zA-Z])
 AlphabetAndDigits      ([a-zA-Z0-9])
 
-    /* hw1 defined that evry hex digit that can be ascii char - so first chat is 0-7 and second is 0-9A-Fa-f */
+    /* hw1 defined that every hex digit that can be ascii char - so first is 0-7 and second is 0-9A-Fa-f */
 
-HexDigit              (x[0-7][0-9A-Fa-f])
+HexDigit              ([0-7][0-9A-Fa-f])
 
     /* not allowed in STRING \, ", \n, \r, \0 so by order of ASCII this is the seq */
     /* ascii table https://simple.wikipedia.org/wiki/File:ASCII-Table-wide.svg */
@@ -40,7 +40,7 @@ WhiteSpaces       ([ \t\n\r])
 
 StringUndefinedEscapeSequence       ([^\\\"nrt0])
 
-UnDefinedHexDigit (x[^0-7][0-9A-Fa-f]|[0-7][^0-9A-Fa-f]|[^0-7][^0-9A-Fa-f]|[^0-9A-Fa-f])
+UnDefinedHexDigit ([^0-7][0-9A-Fa-f]|[0-7][^0-9A-Fa-f]|[^0-7][^0-9A-Fa-f]|[^0-9A-Fa-f])
 
 
     /* --------------------------------------------------------------------------------------- */
@@ -118,11 +118,11 @@ continue                                                                        
     /* for muhammed, the string also include \xdd where dd is hex number, so notice that when you *\
     /* handle this special case in cpp code */
 
-(\"({String}|\\{StringAllowedEscapeSequence}|\\{HexDigit})*\")                                   return STRING;
+\"({String}|{AlphabetAndDigits}|\\{StringAllowedEscapeSequence}|\\x{HexDigit})*\"               return STRING;
 
     /* this case is for the case that line end in the middle of string (unclosed from the right) */
 
-\"({String}|\\{StringAllowedEscapeSequence}|\\{HexDigit})*                                       return UNCLOSED_STRING;
+\"({String}|\\{StringAllowedEscapeSequence}|\\x{HexDigit})*                                      return UNCLOSED_STRING;
 
     /* this case is for the case that the string has an undefined (un-allowed) escape sequence */
     /* the OK escape sequence are: \\, \", \n, \r, \t, \0, \xdd when dd is hex number */
@@ -134,7 +134,7 @@ continue                                                                        
     /* so no difference if string closed or not, the lexer will identified un-defined escape sequence */
     /* and will return the token UNDEFINED_ESCAPE_SEQUENCE that will be handled as error in the cpp code */
 
-\"({String}|\\{StringAllowedEscapeSequence}|\\{HexDigit})*\\StringUndefinedEscapeSequence         return UNDEFINED_ESCAPE_SEQUENCE;
+\"({String}|\\{StringAllowedEscapeSequence}|\\x{HexDigit})*\\({StringUndefinedEscapeSequence}|{UnDefinedHexDigit})       return UNDEFINED_ESCAPE_SEQUENCE;
 
     /* this case if for escape-sequence of the form \xdd that is undefined */
     /* for Muhammed: i added to hpp this speciel case for more comfortable handling this special case */
@@ -142,7 +142,7 @@ continue                                                                        
     /* so this 2 forms: \x (so \\x) and 2chars that is not hex digit and \x and 1 char that is not hex digit, */
     /* including the case when the string is ended, i mean the char " is not valid first or second hex digit */
 
-\"({String}|\\{StringAllowedEscapeSequence}|\\{HexDigit})*\\{UnDefinedHexDigit} return UNDEFINED_ESCAPE_SEQUENCE_HEX;
+\"({String}|\\{StringAllowedEscapeSequence}|\\x{HexDigit})*\\x{UnDefinedHexDigit} return UNDEFINED_ESCAPE_SEQUENCE_HEX;
 
     /* WhiteSpaces shuold be ignored by lexer by hw definition */
 

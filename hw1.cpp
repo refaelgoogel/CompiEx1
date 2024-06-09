@@ -1,143 +1,3 @@
-<<<<<<< HEAD
-/*#include "tokens.hpp"
-=======
->>>>>>> 5121d70e8b511945cf301c06f4e54a31550efc3e
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
-#include <string>
-#include "tokens.hpp"
-using namespace std;
-
-void showToken(const char * name)
-{
-<<<<<<< HEAD
-	int token;
-	while(token = yylex()) { 
-=======
-	if (name == "ERROR"){
-
-		cout << "----------------THIS IS AN ERROR---------------" << endl;
->>>>>>> 5121d70e8b511945cf301c06f4e54a31550efc3e
-
-	}
-
-    printf("%d %s %s\n",yylineno, name, yytext);
-	
-}
-
-int main(){
-
-	int token;
-
-	while(token = yylex()) {
-
-		switch(token) {
-
-			case INT:
-				showToken("INT");
-				break;
-			case BYTE:
-				showToken("BYTE");
-				break;
-			case B:
-				showToken("B");
-				break;
-			case BOOL:
-				showToken("BOOL");
-				break;
-			case AND:
-				showToken("AND");
-				break;
-			case OR:
-				showToken("OR");
-				break;
-			case NOT:
-				showToken("NOT");
-				break;
-			case TRUE:
-				showToken("TRUE");
-				break;
-			case FALSE:
-				showToken("FALSE");
-				break;
-			case RETURN:
-				showToken("RETURN");
-				break;
-			case IF:
-				showToken("IF");
-				break;
-			case ELSE:
-				showToken("ELSE");
-				break;
-			case WHILE:
-				showToken("WHILE");
-				break;
-			case BREAK:
-				showToken("BREAK");
-				break;
-			case CONTINUE:
-				showToken("CONTINUE");
-				break;
-			case SC:
-				showToken("SC");
-				break;
-			case LPAREN:
-				showToken("LPAREN");
-				break;
-			case RPAREN:
-				showToken("RPAREN");
-				break;
-			case LBRACE:
-				showToken("LBRACE");
-				break;
-			case RBRACE:
-				showToken("RBRACE");
-				break;
-			case ASSIGN:
-				showToken("ASSIGN");
-				break;
-			case RELOP:
-				showToken("RELOP");
-				break;
-			case BINOP:
-				showToken("BINOP");
-				break;
-			case COMMENT:
-				showToken("COMMENT");
-				break;
-			case ID:
-				showToken("ID");
-				break;
-			case NUM:
-				showToken("NUM");
-				break;
-			case STRING:
-				showToken("STRING");
-				break;
-			case UNCLOSED_STRING:
-				showToken("UNCLOSED_STRING");
-				break;
-			case UNDEFINED_ESCAPE_SEQUENCE:
-				showToken("UNDEFINED_ESCAPE_SEQUENCE");
-				break;
-			case UNDEFINED_ESCAPE_SEQUENCE_HEX:
-				showToken("UNDEFINED_ESCAPE_SEQUENCE_HEX");
-				break;
-			case ERROR:
-				showToken("ERROR");
-				break;
-			default:
-				showToken("UNKNOWN");
-				break;
-		}
-		
-	}
-
-	return 0;
-}*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -150,20 +10,11 @@ using namespace std;
 
 void printStr();
 void undefinedEscape();
-
 void undefinedHex();
 
-void showToken(const char * name)
+void showToken(const char * nameS)
 {
-	if (name == "ERROR"){
-
-	//	cout << "----------------THIS IS AN ERROR---------------" << endl;
-
-	}
-    cout << yylineno << " " << name << " " << yytext <<endl;
-
-    //printf("%d %s %s\n",yylineno, name, yytext);
-	
+    cout << yylineno << " " << nameS << " " << yytext <<endl;
 }
 
 int main(){
@@ -256,7 +107,7 @@ int main(){
 				printStr();
 				break;
 			case UNCLOSED_STRING:
-				showToken("UNCLOSED_STRING");
+				cout << "Error unclosed string\n";
 				exit(0);
 				break;
 			case UNDEFINED_ESCAPE_SEQUENCE:
@@ -268,7 +119,6 @@ int main(){
 				exit(0);
 				break;
 			case ERROR:
-				//showToken("ERROR");
 				cout<< "ERROR" << yytext <<endl;
 				exit(0);
 				break;
@@ -283,9 +133,8 @@ int main(){
 	return 0;
 }
 
-
-
 void printStr() {
+
     std::string strprint(yytext);
     cout << yylineno << " STRING " ;
     for(int i = 0; i < strprint.size(); i++){
@@ -294,7 +143,7 @@ void printStr() {
         if(character == '"') {
 			 continue;
 		}
-        if(character == '\\' && next_character == 'x'){
+        else if(character == '\\' && next_character == 'x'){
             std::stringstream spars;
             spars << std::hex << strprint.substr(i+2, 2);
             int x;
@@ -302,25 +151,30 @@ void printStr() {
             cout << char(x);
             i += 3;
         } 
-		if(character == '\\' && next_character == 'n'){
+		else if(character == '\\' && next_character == 'n'){
             cout << '\n';
             i++;
+			continue;
         } 
-		if(character == '\\' && next_character == 't'){
+		else if(character == '\\' && next_character == 't'){
             cout << '\t';
             i++;
+			continue;
         }
-		if(character == '\\' && next_character == 'r') {
+		else if(character == '\\' && next_character == 'r') {
             cout << '\r';
             i++;
+			continue;
         } 
-        if(character == '\\' && next_character == '\"'){
+        else if(character == '\\' && next_character == '\"'){
             cout << '\"';
             i++;
+			continue;
         }  
-		if(character == '\\'){
+		else if(character == '\\'){
             cout << '\\';
             i++;
+			continue;
         } else {
             cout << character;
         }
@@ -330,28 +184,76 @@ void printStr() {
 
 
 void undefinedEscape(){
-    std::string strescape(yytext);
+
+    std::string strescape(yytext); 
+	
 	int sizeofstr = strescape.size();
-    char charachter = strescape[sizeofstr - 1];
-    cout << "Error undefined escape sequence " << charachter << endl;
-    exit(0);
+
+	int backslash_index = -1;
+
+	for (int i = sizeofstr - 1; i >= 0; i--) {
+
+		if (strescape[i] == '\\') {
+
+			backslash_index = i;
+			break;
+		}
+	}
+
+	if (backslash_index == -1) {exit(0);}
+
+	if (backslash_index == (sizeofstr - 1)) {cout << "Error undefined escape sequence" << endl; exit(0);}
+
+	cout << "Error undefined escape sequence " << strescape[backslash_index + 1] << endl;
+	exit(0);
+    
 }
 
 void undefinedHex(){
+
     std::string hexstr(yytext);
     int sizeofstr = hexstr.size();
+
     cout << "Error undefined escape sequence ";
-    if(hexstr[sizeofstr-2] == 'x'){
-        cout << hexstr[sizeofstr - 2] << endl;
-        return;
-    }
-    cout << "x" << hexstr[sizeofstr - 2];
-    if(hexstr[sizeofstr - 1] != '"')
-        cout << hexstr[sizeofstr-1];
-    cout << endl;
+
+	// print the undefined hex sequence
+
+	int x_index = -1;
+
+	for (int i = sizeofstr-1; i >= 0; i--) {
+
+		if (hexstr[i] == 'x') {
+			x_index = i;
+			break;
+		}
+	}
+
+	if (x_index == -1) {return;}
+
+	cout << "x";
+
+	if (hexstr[x_index + 1] != '"') {
+
+		cout << hexstr[x_index + 1];
+	}else{
+		
+		cout << "\n";
+		return;
+	}
+
+	if (hexstr[x_index + 2] != '"') {
+		cout << hexstr[x_index + 2];
+	}
+	else{
+		
+		cout << "\n";
+		return;
+	}
+	
+	cout << "\n";
+	return;
+
 }
-
-
 
 
 
